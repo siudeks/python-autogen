@@ -4,6 +4,9 @@ import os
 openai_key = os.environ['OPENAI_KEY']
 openai_endpoint = os.environ['OPENAI_ENDPOINT']
 
+assert openai_key
+assert openai_endpoint
+
 # config_list = [
 #     {
 #         'model': 'gpt-4-plugins',
@@ -26,13 +29,20 @@ llm_config = {
     # agent uses cache if there is the same prompt so that it saves money
     "seed": 42,
     "config_list": config_list,
-    "temperature": 0
+    "temperature": 0,
+    "top_p": 0
 }
 
 assistant = autogen.AssistantAgent(
     name="Psychologist",
     llm_config=llm_config,
     system_message="Psychologist specialised about people relationship"
+)
+
+mathematician_assistant = autogen.AssistantAgent(
+    name="Mathematician",
+    llm_config=llm_config,
+    system_message="Mathematician"
 )
 
 user_proxy = autogen.UserProxyAgent(
@@ -48,11 +58,15 @@ user_proxy = autogen.UserProxyAgent(
     Otherwise, reply CONTINUE, or the reason why the task is not solved yet."""
 )
 
-task = """
+task1 = """
 Give me a summary of this article: https://epiotrkow.pl/news/50-lat-malzenstwa-minelo-jak-jeden-dzien--nbsp;,53297
 """
 
+example_task_2 = """
+Generate numbers from 0 to 10 and write them on disk
+"""
+
 user_proxy.initiate_chat(
-    assistant,
-    message=task
+    mathematician_assistant,
+    message=example_task_2
 )
